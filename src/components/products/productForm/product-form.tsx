@@ -1,18 +1,18 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Controller, useForm } from "react-hook-form";
-import { z } from "zod";
 import { CategoriesSelect, CurrencySelect } from "@/components/common";
 import { Button, CardContent, Input, Label } from "@/components/ui";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { DialogClose } from "@radix-ui/react-dialog";
+import { Controller, useForm } from "react-hook-form";
+import { z } from "zod";
 
 // Define the schema using zod
 const productSchema = z.object({
   name: z.string().nonempty("Nombre es requerido"),
-  description: z.string().nonempty("Descripcion es requerida").nullable(),
-  price: z.number().min(0, "Precio debe ser mayor o igual a 0").nullable(),
-  categoryId: z.string().nonempty("Categoria es requerida").nullable(),
+  description: z.string().nonempty("Descripcion es requerida"),
+  price: z.number().min(0, "Precio debe ser mayor o igual a 0"),
+  categoryId: z.string().nonempty("Categoria es requerida"),
 });
 
 export type ProductFormValues = z.infer<typeof productSchema>;

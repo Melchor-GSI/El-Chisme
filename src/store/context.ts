@@ -8,6 +8,7 @@ export const initialState: State = {
   locatingCoords: null,
   selectedLocation: null,
   locations: [],
+  gossipLocations: [],
 };
 
 export const LocationContext = createContext<{

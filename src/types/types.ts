@@ -6,6 +6,7 @@ export type State = {
   locatingCoords: Location | null;
   selectedLocation: GetProductDto | null;
   locations: GetProductDto[];
+  gossipLocations: GetProductDto[];
 };
 
 // Define action types

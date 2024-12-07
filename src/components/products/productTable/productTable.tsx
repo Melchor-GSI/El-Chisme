@@ -1,24 +1,5 @@
 "use client";
 
-import { useState, useEffect, forwardRef, useImperativeHandle } from "react";
-import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -29,12 +10,31 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/base-button";
 import {
-  getProductsByStore,
-  deleteProduct,
-} from "@/lib/server/services/products";
-import { getCategories } from "@/lib/server/services/categories";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { useNotification } from "@/contexts/NotificationContext";
+import { getCategories } from "@/lib/server/services/categories";
+import {
+  deleteProduct,
+  getProductsByStore,
+} from "@/lib/server/services/products";
+import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 interface Product {
   id: number;
   name: string | null;

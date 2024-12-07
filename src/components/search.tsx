@@ -23,14 +23,16 @@ export default function Search() {
   useEffect(() => {
     getProducts(filters)
       .then((data) => {
-        console.log(data);
         dispatch({
           type: "SET_LOCATIONS",
           payload: data.filter((d) => !!d.lat && !!d.lng),
         });
       })
-
       .catch((error) => console.error(error));
+
+    // getChismes(filters).then((data) => {
+    //   console.log(data);
+    // });
   }, [searchParams]);
 
   useEffect(() => {

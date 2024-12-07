@@ -31,8 +31,8 @@ export const getChismes = async (filters?: ProductFilter) => {
         id: ChismeTable.id,
         product: productColumns,
         location: locationColumns,
-        created_date: ChismeTable.created_date,
-        end_date: ChismeTable.end_date,
+        created_date: ChismeTable.createdDate,
+        end_date: ChismeTable.endDate,
       })
       .from(ChismeTable)
       .leftJoin(ProductTable, eq(ChismeTable.productId, ProductTable.id))
@@ -50,6 +50,9 @@ export const createChisme = async ({
   location,
 }: CreateChismeDto) => {
   try {
+    if (!location?.lat || !location?.lng)
+      return Promise.reject("No coordinates");
+
     const [newProduct] = await db
       .insert(ProductTable)
       .values(product)
@@ -59,19 +62,20 @@ export const createChisme = async ({
 
     const [newLocation] = await db
       .insert(LocationTable)
-      .values({ ...location })
+      .values({ name: "", ...location })
       .returning({
         id: ProductTable.id,
       });
 
-    const newChisme = await db
+    const [newChisme] = await db
       .insert(ChismeTable)
       .values({
         productId: newProduct.id,
         storeId,
         location: newLocation.id,
       })
-      .returning();
+      .returning({ id: ChismeTable.id });
+
     return newChisme;
   } catch (err) {
     console.log(err);

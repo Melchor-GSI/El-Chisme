@@ -1,3 +1,4 @@
+export * from "./base-button";
 export * from "./button";
 export * from "./card";
 export * from "./input";

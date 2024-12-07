@@ -1,4 +1,5 @@
-import { LocationProvider } from "@/store";
+import { Notification } from "@/components/notification";
+import { NotificationProvider } from "@/contexts/NotificationContext";
 import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 
@@ -9,15 +10,16 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider>
-      <LocationProvider>
+      <NotificationProvider>
         <html lang="en">
           <body>
             <main className="relative h-screen w-screen overflow-hidden">
               {children}
+              <Notification />
             </main>
           </body>
         </html>
-      </LocationProvider>
+      </NotificationProvider>
     </ClerkProvider>
   );
 }

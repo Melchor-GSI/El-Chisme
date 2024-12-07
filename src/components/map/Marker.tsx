@@ -1,11 +1,10 @@
 "use client";
 
 import { Product } from "@/types/product";
-import { formatToCurrency } from "@/utils/format";
+import L from "leaflet";
 import { MapPin } from "lucide-react";
-import { Marker, Popup } from "react-leaflet";
-import { CategoryLabel } from "../common/category-label";
-import { Data } from "../data";
+import { createRoot } from "react-dom/client";
+import { Marker, MarkerProps } from "react-leaflet";
 
 export type LocationMarkerProps = {
   store: string;
@@ -13,29 +12,19 @@ export type LocationMarkerProps = {
   location: [number, number];
 };
 
-export const LocationMarker = ({
-  store,
-  product,
-  location,
-}: LocationMarkerProps) => {
-  return (
-    <Marker position={location}>
-      <MapPin />
-      <Popup>
-        <div className="p-2">
-          <h3 className="font-bold">{store}</h3>
+export const createCustomIcon = () => {
+  const iconHtml = document.createElement("div");
+  const root = createRoot(iconHtml);
+  root.render(<MapPin size={40} color="FAFAFA" />);
 
-          <div className="">
-            <Data title="Nombre" value={product.name} />
+  return L.divIcon({
+    html: iconHtml,
+    className: "custom-marker",
+    iconSize: [40, 40],
+    iconAnchor: [20, 40],
+  });
+};
 
-            <Data title="Precio" value={formatToCurrency(product.price)} />
-            <Data
-              title="Categoria"
-              value={<CategoryLabel value={product.categoryId} />}
-            />
-          </div>
-        </div>
-      </Popup>
-    </Marker>
-  );
+export const LocationMarker = (props: MarkerProps) => {
+  return <Marker {...props} />;
 };

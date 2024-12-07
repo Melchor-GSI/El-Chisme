@@ -1,22 +1,22 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { ProductTable } from "@/components/products/productTable/productTable";
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-  DialogDescription,
-} from "@/components/ui/dialog";
 import {
   ProductForm,
   ProductFormValues,
 } from "@/components/products/productForm/product-form";
-import { toast } from "sonner";
+import { ProductTable } from "@/components/products/productTable/productTable";
+import { Button } from "@/components/ui/base-button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Product } from "@/types/product";
+import { useRef, useState } from "react";
+import { toast } from "sonner";
 
 interface SelectedProduct extends ProductFormValues {
   id: number;

@@ -18,6 +18,6 @@ export const ChismeTable = pgTable("chismes", {
   price: doublePrecision("price"),
   location: integer("location").references((): AnyPgColumn => LocationTable.id),
   storeId: integer("store_id").references((): AnyPgColumn => StoreTable.id),
-  created_date: timestamp("created_date").defaultNow().notNull(),
-  end_date: timestamp("end_date").defaultNow().notNull(),
+  createdDate: timestamp("created_date").defaultNow().notNull(),
+  endDate: timestamp("end_date").defaultNow().notNull(),
 });

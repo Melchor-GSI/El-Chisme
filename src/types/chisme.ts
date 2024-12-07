@@ -4,6 +4,6 @@ import { CreateProductDto } from "./product";
 export type CreateChismeDto = {
   product: CreateProductDto;
   storeId?: number;
-  location: Location;
+  location?: Location;
   price?: number;
 };
