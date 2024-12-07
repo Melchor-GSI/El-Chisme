@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { Product, productService } from '@/lib/server/services/productServices'
 import { useNotification } from '@/app/contexts/NotificationContext'
 
+
 export function useProducts() {
   const [products, setProducts] = useState<Product[]>([])
   const [isLoading, setIsLoading] = useState(true)
