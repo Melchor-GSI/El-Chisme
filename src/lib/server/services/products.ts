@@ -1,3 +1,5 @@
+'use server'
+
 import { db } from "@/lib/db";
 import { GetProductDto, ProductFilter } from "@/types/product";
 import { and, eq, gte, ilike, lte, SQL } from "drizzle-orm";

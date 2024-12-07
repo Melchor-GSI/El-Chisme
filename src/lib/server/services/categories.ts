@@ -1,3 +1,5 @@
+'use server'
+
 import { db } from "@/lib/db";
 import { CategoriesTable } from "../db/schemas/category";
 

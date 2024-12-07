@@ -1,3 +1,5 @@
+'use server'
+
 // Simulamos una base de datos con un array
 let products = [
     { id: 1, name: 'Laptop', price: 999.99, category: 'Electronics' },

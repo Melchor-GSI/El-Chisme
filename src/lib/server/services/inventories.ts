@@ -1,3 +1,5 @@
+'use server'
+
 import { db } from "@/lib/db";
 import { CreateProductDto } from "@/types/product";
 import { eq, getTableColumns } from "drizzle-orm";
