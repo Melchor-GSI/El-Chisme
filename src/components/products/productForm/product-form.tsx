@@ -10,18 +10,19 @@ import { DialogClose } from "@radix-ui/react-dialog";
 // Define the schema using zod
 const productSchema = z.object({
   name: z.string().nonempty("Nombre es requerido"),
-  description: z.string().nonempty("Descripcion es requerida"),
-  price: z.number().min(0, "Precio debe ser mayor o igual a 0"),
-  categoryId: z.string().nonempty("Categoria es requerida"),
+  description: z.string().nonempty("Descripcion es requerida").nullable(),
+  price: z.number().min(0, "Precio debe ser mayor o igual a 0").nullable(),
+  categoryId: z.string().nonempty("Categoria es requerida").nullable(),
 });
 
 export type ProductFormValues = z.infer<typeof productSchema>;
 
 interface ProductFormProps {
   onSubmit: (data: ProductFormValues) => void;
+  initialValues?: ProductFormValues;
 }
 
-export const ProductForm = ({ onSubmit }: ProductFormProps) => {
+export const ProductForm = ({ onSubmit, initialValues }: ProductFormProps) => {
   const {
     register,
     handleSubmit,
@@ -29,11 +30,16 @@ export const ProductForm = ({ onSubmit }: ProductFormProps) => {
     formState: { errors },
   } = useForm<ProductFormValues>({
     resolver: zodResolver(productSchema),
+    defaultValues: initialValues,
   });
 
   return (
     <CardContent className="space-y-2">
-      <form id="product" onSubmit={handleSubmit(onSubmit)}  className="space-y-2">
+      <form
+        id="product"
+        onSubmit={handleSubmit(onSubmit)}
+        className="space-y-2"
+      >
         <div className="space-y-2">
           <Label>Nombre</Label>
           <Input {...register("name")} placeholder="Inserte nombre" />
