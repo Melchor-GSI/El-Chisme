@@ -1,10 +1,16 @@
 "use client";
 
+import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
+
+import { useLocationContext } from "@/store";
+import "leaflet-defaulticon-compatibility";
+import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
 import "leaflet/dist/leaflet.css";
-import { MapContainer, TileLayer } from "react-leaflet";
 
 export default function Map() {
-  const havanaPosition: [number, number] = [23.1136, -82.3666]; // Latitude and Longitude of Havana
+  const { state } = useLocationContext();
+
+  const havanaPosition: [number, number] = [23.1136, -82.3666];
 
   return (
     <MapContainer
@@ -17,6 +23,12 @@ export default function Map() {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       />
+
+      {state.locations.map(({ store, id }) => (
+        <Marker position={[store.lat, store.long]} key={id}>
+          <Popup>{store.name}</Popup>
+        </Marker>
+      ))}
     </MapContainer>
   );
 }

@@ -1,4 +1,3 @@
-// pages/api/categories.ts
 import { getCategories } from "@/lib/server/services/categories";
 import { NextResponse } from "next/server";
 

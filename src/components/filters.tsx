@@ -67,10 +67,7 @@ export const Filters = () => {
               type="number"
               min="0"
             />
-            <CurrencySelect
-              value={filters.currency}
-              onValueChange={onSelect("currency")}
-            />
+            <CurrencySelect disabled />
           </div>
         </div>
       </CardContent>
