@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, forwardRef, useImperativeHandle } from "react";
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -33,6 +33,7 @@ import {
   getProductsByStore,
   deleteProduct,
 } from "@/lib/server/services/products";
+import { getCategories } from "@/lib/server/services/categories";
 
 interface Product {
   id: number;
@@ -44,34 +45,57 @@ interface Product {
   categoryId: number | null;
 }
 
-export function ProductTable({
-  storeId,
-  onEdit,
-}: {
-  storeId: number;
-  onEdit: (product: Product) => void;
-}) {
+export const ProductTable = forwardRef(function ProductTable(
+  { storeId, onEdit }: { storeId: number; onEdit: (product: Product) => void },
+  ref
+) {
   const [products, setProducts] = useState<Product[]>([]);
   const [productToDelete, setProductToDelete] = useState<Product | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [categories, setCategories] = useState<{ [key: string]: string }>({});
+
+  const loadProducts = async () => {
+    try {
+      setIsLoading(true);
+      const data = await getProductsByStore(storeId);
+      const validProducts = data
+        .filter((p): p is Product => p.id !== null)
+        .map((p) => ({
+          ...p,
+          id: p.id!,
+          createdAt: new Date(),
+        }));
+      setProducts(validProducts);
+    } catch {
+      setError("Error al cargar los productos");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const loadProducts = async () => {
-      try {
-        setIsLoading(true);
-        const data = await getProductsByStore(storeId);
-        const validProducts = data.filter((p): p is Product => p.id !== null);
-        setProducts(validProducts);
-      } catch {
-        setError("Error al cargar los productos");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
     loadProducts();
   }, [storeId]);
+
+  useEffect(() => {
+    const loadCategories = async () => {
+      const categoriesData = await getCategories();
+      const categoryMap = categoriesData.reduce(
+        (acc: { [key: string]: string }, cat) => {
+          acc[cat.id] = cat.name;
+          return acc;
+        },
+        {}
+      );
+      setCategories(categoryMap);
+    };
+    loadCategories();
+  }, []);
+
+  useImperativeHandle(ref, () => ({
+    loadProducts,
+  }));
 
   if (isLoading) return <div>Cargando productos...</div>;
   if (error) return <div>Error: {error}</div>;
@@ -98,6 +122,7 @@ export function ProductTable({
             <TableHead className="w-[200px]">Nombre</TableHead>
             <TableHead>Precio</TableHead>
             <TableHead>Cantidad</TableHead>
+            <TableHead>Categoría</TableHead>
             <TableHead className="w-[70px]">Acciones</TableHead>
           </TableRow>
         </TableHeader>
@@ -107,6 +132,10 @@ export function ProductTable({
               <TableCell className="font-medium">{product.name}</TableCell>
               <TableCell>${product.price.toFixed(2)}</TableCell>
               <TableCell>{product.quantity}</TableCell>
+              <TableCell>
+                {categories[product.categoryId?.toString() || ""] ||
+                  "Sin categoría"}
+              </TableCell>
               <TableCell>
                 <ProductActions
                   product={product}
@@ -126,7 +155,7 @@ export function ProductTable({
       />
     </div>
   );
-}
+});
 
 function ProductActions({
   product,

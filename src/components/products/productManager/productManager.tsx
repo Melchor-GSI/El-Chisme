@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { ProductTable } from "@/components/products/productTable/productTable";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,6 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import {
   ProductForm,
@@ -17,11 +18,16 @@ import {
 import { toast } from "sonner";
 import { Product } from "@/types/product";
 
+interface SelectedProduct extends ProductFormValues {
+  id: number;
+}
+
 export function ProductManager() {
   const [open, setOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] =
-    useState<ProductFormValues | null>(null);
+    useState<SelectedProduct | null>(null);
+  const tableRef = useRef<{ loadProducts: () => Promise<void> }>(null);
 
   const handleSubmit = async (data: ProductFormValues) => {
     try {
@@ -36,11 +42,42 @@ export function ProductManager() {
 
   const handleEdit = async (data: ProductFormValues) => {
     try {
-      console.log("Producto a editar:", data);
+      if (!selectedProduct?.id) return;
+
+      const updatedProduct = {
+        name: data.name,
+        description: data.description || null,
+        price: data.price || "0",
+        categoryId: data.categoryId ? parseInt(data.categoryId) : null,
+      };
+
+      console.log("Enviando actualización:", updatedProduct);
+
+      const response = await fetch(`/api/products/${selectedProduct.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedProduct),
+      });
+
+      const result = await response.json();
+      console.log("Respuesta del servidor:", result);
+
+      if (!response.ok) {
+        throw new Error(result.error || "Error al actualizar");
+      }
+
       toast.success("Producto actualizado exitosamente");
       setEditOpen(false);
       setSelectedProduct(null);
-    } catch {
+
+      // Recargar la tabla
+      if (tableRef.current) {
+        await tableRef.current.loadProducts();
+      }
+    } catch (error) {
+      console.error("Error detallado:", error);
       toast.error("Error al actualizar el producto");
     }
   };
@@ -52,7 +89,7 @@ export function ProductManager() {
       price: product.price || null,
       categoryId: product.categoryId?.toString() || null,
     };
-    setSelectedProduct(formValues);
+    setSelectedProduct({ id: product.id, ...formValues });
     setEditOpen(true);
   };
 
@@ -78,6 +115,9 @@ export function ProductManager() {
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>Editar Producto</DialogTitle>
+            <DialogDescription>
+              Modifica los detalles del producto seleccionado.
+            </DialogDescription>
           </DialogHeader>
           {selectedProduct && (
             <ProductForm
@@ -89,7 +129,7 @@ export function ProductManager() {
       </Dialog>
 
       <div className="overflow-x-auto">
-        <ProductTable storeId={1} onEdit={onEdit} />
+        <ProductTable ref={tableRef} storeId={1} onEdit={onEdit} />
       </div>
     </div>
   );
