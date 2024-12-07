@@ -5,7 +5,6 @@ import { GetProductDto, ProductFilter } from "@/types/product";
 import {
   and,
   eq,
-  getTableColumns,
   gte,
   ilike,
   lte,
@@ -15,6 +14,7 @@ import {
 import { ProductTable } from "../db/schemas";
 import { ProductInventoryTable } from "../db/schemas/product_inventory";
 import { StoreTable } from "../db/schemas/store";
+
 
 export const getProducts = async (
   filters?: ProductFilter
@@ -67,10 +67,17 @@ export const getProducts = async (
 };
 
 export const getProductsByStore = async (storeId: number) => {
-  const productColumns = getTableColumns(ProductTable);
   try {
     return await db
-      .select({ ...productColumns, quantity: ProductInventoryTable.quantity })
+      .select({
+        id: ProductTable.id,
+        name: ProductTable.name,
+        description: ProductTable.description,
+        image: ProductTable.image,
+        price: ProductInventoryTable.price,
+        quantity: ProductInventoryTable.quantity,
+        categoryId: ProductTable.categoryId
+      })
       .from(ProductInventoryTable)
       .leftJoin(
         ProductTable,
@@ -78,7 +85,15 @@ export const getProductsByStore = async (storeId: number) => {
       )
       .where(eq(ProductInventoryTable.storeId, storeId));
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return [];
+  }
+};
+
+export const deleteProduct = async (id: number): Promise<void> => {
+  try {
+    await db.delete(ProductTable).where(eq(ProductTable.id, id));
+  } catch {
+    throw new Error('Error al eliminar el producto');
   }
 };

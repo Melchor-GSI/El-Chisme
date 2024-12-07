@@ -15,7 +15,7 @@ import {
   ProductFormValues,
 } from "@/components/products/productForm/product-form";
 import { toast } from "sonner";
-import { Product } from "@/lib/server/services/productServices";
+import { Product } from "@/types/product";
 
 export function ProductManager() {
   const [open, setOpen] = useState(false);
@@ -47,10 +47,10 @@ export function ProductManager() {
 
   const onEdit = (product: Product) => {
     const formValues: ProductFormValues = {
-      name: product.name,
+      name: product.name || "",
       description: product.description || "",
       price: product.price || null,
-      categoryId: product.category?.toString() || "",
+      categoryId: product.categoryId?.toString() || null,
     };
     setSelectedProduct(formValues);
     setEditOpen(true);
@@ -89,7 +89,7 @@ export function ProductManager() {
       </Dialog>
 
       <div className="overflow-x-auto">
-        <ProductTable onEdit={onEdit} />
+        <ProductTable storeId={1} onEdit={onEdit} />
       </div>
     </div>
   );

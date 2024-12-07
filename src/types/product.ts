@@ -1,11 +1,13 @@
 export type Product = {
   id: number;
-  name: string;
-  price: number | null;
+  name: string | null;
   description: string | null;
+  image: string | null;
+  price: number;
+  quantity: number;
   categoryId: number | null;
-  createdAt: Date | null;
-};
+  createdAt?: Date;
+}
 
 export type ProductFilter = {
   name?: string;

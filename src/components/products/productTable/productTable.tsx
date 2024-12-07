@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -29,27 +29,59 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Product } from "@/lib/server/services/productServices";
-import { useProducts } from "@/hooks/useProduct";
+import {
+  getProductsByStore,
+  deleteProduct,
+} from "@/lib/server/services/products";
+
+interface Product {
+  id: number;
+  name: string | null;
+  description: string | null;
+  image: string | null;
+  price: number;
+  quantity: number;
+  categoryId: number | null;
+}
 
 export function ProductTable({
+  storeId,
   onEdit,
 }: {
+  storeId: number;
   onEdit: (product: Product) => void;
 }) {
-  const { products, isLoading, error, deleteProduct } = useProducts();
+  const [products, setProducts] = useState<Product[]>([]);
   const [productToDelete, setProductToDelete] = useState<Product | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        setIsLoading(true);
+        const data = await getProductsByStore(storeId);
+        const validProducts = data.filter((p): p is Product => p.id !== null);
+        setProducts(validProducts);
+      } catch {
+        setError("Error al cargar los productos");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadProducts();
+  }, [storeId]);
 
   if (isLoading) return <div>Cargando productos...</div>;
   if (error) return <div>Error: {error}</div>;
-
   const handleDeleteClick = (product: Product) => {
     setProductToDelete(product);
   };
 
   const handleDeleteConfirm = async () => {
     if (productToDelete) {
-      await deleteProduct(productToDelete.id, productToDelete.name);
+      await deleteProduct(productToDelete.id);
       setProductToDelete(null);
     }
   };
@@ -65,7 +97,7 @@ export function ProductTable({
           <TableRow>
             <TableHead className="w-[200px]">Nombre</TableHead>
             <TableHead>Precio</TableHead>
-            <TableHead className="hidden sm:table-cell">Categoría</TableHead>
+            <TableHead>Cantidad</TableHead>
             <TableHead className="w-[70px]">Acciones</TableHead>
           </TableRow>
         </TableHeader>
@@ -74,9 +106,7 @@ export function ProductTable({
             <TableRow key={product.id}>
               <TableCell className="font-medium">{product.name}</TableCell>
               <TableCell>${product.price.toFixed(2)}</TableCell>
-              <TableCell className="hidden sm:table-cell">
-                {product.category}
-              </TableCell>
+              <TableCell>{product.quantity}</TableCell>
               <TableCell>
                 <ProductActions
                   product={product}
