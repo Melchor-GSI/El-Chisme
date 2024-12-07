@@ -21,19 +21,37 @@ export type Category = {
   createdAt: Date | null;
 };
 
+// export type GetProductDto = {
+//   name: string;
+//   description: string;
+//   price: number | null;
+//   image: string | null;
+//   store: {
+//     id: number;
+//     name: string;
+//     contact_information: string | null;
+//     opening_hours: Date | null;
+//     location: {
+//       lat: number;
+//       lng: number;
+//     }
+//   } | null;
+// };
+
 export type GetProductDto = {
+  id: number;
   name: string;
-  description: string;
-  price: number | null;
-  image: string | null;
-  store: {
+  contact_information: string | null;
+  opening_hours: Date | null;
+  lat: number;
+  lng: number;
+  products: {
     id: number;
     name: string;
-    contact_information: string | null;
-    opening_hours: Date | null;
-    lat: number;
-    long: number;
-  } | null;
+    description: string;
+    price: number | null;
+    image: string | null;
+  }[];
 };
 
 export type CreateProductDto = {

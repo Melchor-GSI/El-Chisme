@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS "categories" (
-	"id" integer PRIMARY KEY NOT NULL,
+	"id" serial PRIMARY KEY NOT NULL,
 	"name" text NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL
 );
@@ -20,10 +20,9 @@ CREATE TABLE IF NOT EXISTS "chisme-validations" (
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "products" (
-	"id" integer PRIMARY KEY NOT NULL,
+	"id" integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY (sequence name "products_id_seq" INCREMENT BY 1 MINVALUE 1 MAXVALUE 2147483647 START WITH 1 CACHE 1),
 	"name" text NOT NULL,
 	"description" text NOT NULL,
-	"price" integer,
 	"image" text,
 	"category_id" integer,
 	"created_at" timestamp DEFAULT now() NOT NULL
@@ -43,26 +42,28 @@ CREATE TABLE IF NOT EXISTS "users" (
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "locations" (
 	"id" serial PRIMARY KEY NOT NULL,
-	"name" text NOT NULL,
-	"coordinates" text NOT NULL
+	"name" text,
+	"lat" double precision NOT NULL,
+	"lng" double precision NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "product-inventories" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"store_id" integer,
 	"product_id" integer NOT NULL,
-	"quantity" integer NOT NULL
+	"quantity" integer NOT NULL,
+	"price" integer NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "stores" (
-	"store_id" serial PRIMARY KEY NOT NULL,
+	"id" serial PRIMARY KEY NOT NULL,
 	"name" text NOT NULL,
 	"phone" text,
 	"shipping_options" boolean DEFAULT false,
 	"opening_hours" timestamp,
 	"owner" integer,
 	"lat" double precision NOT NULL,
-	"long" double precision NOT NULL
+	"lng" double precision NOT NULL
 );
 --> statement-breakpoint
 DO $$ BEGIN
@@ -78,7 +79,7 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "chismes" ADD CONSTRAINT "chismes_store_id_stores_store_id_fk" FOREIGN KEY ("store_id") REFERENCES "public"."stores"("store_id") ON DELETE no action ON UPDATE no action;
+ ALTER TABLE "chismes" ADD CONSTRAINT "chismes_store_id_stores_id_fk" FOREIGN KEY ("store_id") REFERENCES "public"."stores"("id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -102,7 +103,7 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "product-inventories" ADD CONSTRAINT "product-inventories_store_id_stores_store_id_fk" FOREIGN KEY ("store_id") REFERENCES "public"."stores"("store_id") ON DELETE no action ON UPDATE no action;
+ ALTER TABLE "product-inventories" ADD CONSTRAINT "product-inventories_store_id_stores_id_fk" FOREIGN KEY ("store_id") REFERENCES "public"."stores"("id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

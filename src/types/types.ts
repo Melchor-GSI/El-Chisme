@@ -17,7 +17,7 @@ export type Location = {
 };
 
 export type State = {
-  locations: Location[];
+  locations: GetProductDto[];
 };
 
 // Define action types

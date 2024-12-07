@@ -27,7 +27,7 @@ export default function Search() {
         console.log(data);
         dispatch({
           type: "SET_LOCATIONS",
-          payload: data.filter((d) => d.store !== null),
+          payload: data.filter((d) => !!d.lat && !!d.lng),
         });
       })
 

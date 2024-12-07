@@ -2,7 +2,16 @@
 
 import { db } from "@/lib/db";
 import { GetProductDto, ProductFilter } from "@/types/product";
-import { and, eq, getTableColumns, gte, ilike, lte, SQL } from "drizzle-orm";
+import {
+  and,
+  eq,
+  getTableColumns,
+  gte,
+  ilike,
+  lte,
+  sql,
+  SQL
+} from "drizzle-orm";
 import { ProductTable } from "../db/schemas";
 import { ProductInventoryTable } from "../db/schemas/product_inventory";
 import { StoreTable } from "../db/schemas/store";
@@ -24,30 +33,33 @@ export const getProducts = async (
 
     if (filters?.priceMin)
       _filters.push(gte(ProductInventoryTable.price, Number(filters.priceMin)));
-
-    return await db
+    console.log(_filters)
+    return (await db
       .select({
-        id: ProductTable.id,
-        name: ProductTable.name,
-        description: ProductTable.description,
-        price: ProductInventoryTable.price,
-        image: ProductTable.image,
-        store: {
-          id: StoreTable.id,
-          name: StoreTable.name,
-          contact_information: StoreTable.contact_information,
-          opening_hours: StoreTable.opening_hours,
-          lat: StoreTable.lat,
-          long: StoreTable.long,
-        },
+        id: StoreTable.id,
+        name: StoreTable.name,
+        contact_information: StoreTable.contact_information,
+        opening_hours: StoreTable.opening_hours,
+        lat: StoreTable.lat,
+        lng: StoreTable.lng,
+        products: sql`COALESCE(json_agg(
+        json_build_object(
+            'id', ${ProductTable.id},
+            'name', ${ProductTable.name},
+            'description', ${ProductTable.description},
+            'price', ${ProductInventoryTable.price},
+            'image', ${ProductTable.image}
+        )
+    ) FILTER (WHERE ${ProductTable.id} IS NOT NULL), '[]')`,
       })
-      .from(ProductTable)
+      .from(StoreTable)
       .leftJoin(
         ProductInventoryTable,
-        eq(ProductTable.id, ProductInventoryTable.productId)
+        eq(StoreTable.id, ProductInventoryTable.storeId)
       )
-      .leftJoin(StoreTable, eq(ProductInventoryTable.storeId, StoreTable.id))
-      .where(and(..._filters));
+      .leftJoin(ProductTable, eq(ProductInventoryTable.productId, ProductTable.id))
+      .where(and(..._filters))
+      .groupBy(StoreTable.id)) as GetProductDto[];
   } catch (error) {
     console.error(error);
     return [];

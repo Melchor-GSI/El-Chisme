@@ -24,9 +24,9 @@ export default function Map() {
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       />
 
-      {state.locations.map(({ store, id }) => (
-        <Marker position={[store.lat, store.long]} key={id}>
-          <Popup>{store.name}</Popup>
+      {state.locations.map(({ id, lat, lng, name }) => (
+        <Marker position={[lat, lng]} key={id}>
+          <Popup>{name}</Popup>
         </Marker>
       ))}
     </MapContainer>

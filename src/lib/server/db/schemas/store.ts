@@ -18,5 +18,5 @@ export const StoreTable = pgTable("stores", {
   opening_hours: timestamp("opening_hours"),
   owner: integer("owner").references((): AnyPgColumn => UserTable.id),
   lat: doublePrecision("lat").notNull(),
-  long: doublePrecision("long").notNull(),
+  lng: doublePrecision("lng").notNull(),
 });

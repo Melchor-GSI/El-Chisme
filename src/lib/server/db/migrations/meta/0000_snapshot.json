@@ -1,5 +1,5 @@
 {
-  "id": "d25df3a7-11fb-4d9d-b1a9-65e3323ce666",
+  "id": "29d2b2cf-edc8-4b78-8272-4f65ae1d4fd7",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -10,7 +10,7 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "integer",
+          "type": "serial",
           "primaryKey": true,
           "notNull": true
         },
@@ -106,15 +106,15 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "chismes_store_id_stores_store_id_fk": {
-          "name": "chismes_store_id_stores_store_id_fk",
+        "chismes_store_id_stores_id_fk": {
+          "name": "chismes_store_id_stores_id_fk",
           "tableFrom": "chismes",
           "tableTo": "stores",
           "columnsFrom": [
             "store_id"
           ],
           "columnsTo": [
-            "store_id"
+            "id"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
@@ -192,7 +192,18 @@
           "name": "id",
           "type": "integer",
           "primaryKey": true,
-          "notNull": true
+          "notNull": true,
+          "identity": {
+            "type": "always",
+            "name": "products_id_seq",
+            "schema": "public",
+            "increment": "1",
+            "startWith": "1",
+            "minValue": "1",
+            "maxValue": "2147483647",
+            "cache": "1",
+            "cycle": false
+          }
         },
         "name": {
           "name": "name",
@@ -205,12 +216,6 @@
           "type": "text",
           "primaryKey": false,
           "notNull": true
-        },
-        "price": {
-          "name": "price",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
         },
         "image": {
           "name": "image",
@@ -341,11 +346,17 @@
           "name": "name",
           "type": "text",
           "primaryKey": false,
+          "notNull": false
+        },
+        "lat": {
+          "name": "lat",
+          "type": "double precision",
+          "primaryKey": false,
           "notNull": true
         },
-        "coordinates": {
-          "name": "coordinates",
-          "type": "text",
+        "lng": {
+          "name": "lng",
+          "type": "double precision",
           "primaryKey": false,
           "notNull": true
         }
@@ -385,19 +396,25 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": true
+        },
+        "price": {
+          "name": "price",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
         }
       },
       "indexes": {},
       "foreignKeys": {
-        "product-inventories_store_id_stores_store_id_fk": {
-          "name": "product-inventories_store_id_stores_store_id_fk",
+        "product-inventories_store_id_stores_id_fk": {
+          "name": "product-inventories_store_id_stores_id_fk",
           "tableFrom": "product-inventories",
           "tableTo": "stores",
           "columnsFrom": [
             "store_id"
           ],
           "columnsTo": [
-            "store_id"
+            "id"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
@@ -426,8 +443,8 @@
       "name": "stores",
       "schema": "",
       "columns": {
-        "store_id": {
-          "name": "store_id",
+        "id": {
+          "name": "id",
           "type": "serial",
           "primaryKey": true,
           "notNull": true
@@ -469,8 +486,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "long": {
-          "name": "long",
+        "lng": {
+          "name": "lng",
           "type": "double precision",
           "primaryKey": false,
           "notNull": true
