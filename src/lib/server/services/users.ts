@@ -1,6 +1,6 @@
 import { db } from "@/lib/db";
 import { User } from "@/types/user"
-import { usersTable } from "../db/schemas";
+import { UserTable } from "../db/schemas/user";
 
 export const setUser = async (user: User) => {
     const userUpdated = {
@@ -8,5 +8,5 @@ export const setUser = async (user: User) => {
         isMerchant: false
     }
 
-    return db.insert(usersTable).values(userUpdated)
+    return db.insert(UserTable).values(userUpdated)
 }
