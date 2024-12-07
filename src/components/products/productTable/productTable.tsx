@@ -34,7 +34,7 @@ import {
   deleteProduct,
 } from "@/lib/server/services/products";
 import { getCategories } from "@/lib/server/services/categories";
-
+import { useNotification } from "@/contexts/NotificationContext";
 interface Product {
   id: number;
   name: string | null;
@@ -54,6 +54,7 @@ export const ProductTable = forwardRef(function ProductTable(
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [categories, setCategories] = useState<{ [key: string]: string }>({});
+  const { addNotification } = useNotification();
 
   const loadProducts = async () => {
     try {
@@ -105,8 +106,18 @@ export const ProductTable = forwardRef(function ProductTable(
 
   const handleDeleteConfirm = async () => {
     if (productToDelete) {
-      await deleteProduct(productToDelete.id);
-      setProductToDelete(null);
+      try {
+        await deleteProduct(productToDelete.id, storeId);
+        setProductToDelete(null);
+        await loadProducts();
+        addNotification(
+          "success",
+          "El producto ha sido eliminado correctamente"
+        );
+      } catch (error) {
+        console.error("Error al eliminar:", error);
+        addNotification("error", "No se pudo eliminar el producto");
+      }
     }
   };
 

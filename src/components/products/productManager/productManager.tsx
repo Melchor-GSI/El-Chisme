@@ -129,7 +129,7 @@ export function ProductManager() {
       </Dialog>
 
       <div className="overflow-x-auto">
-        <ProductTable ref={tableRef} storeId={1} onEdit={onEdit} />
+        <ProductTable ref={tableRef} storeId={3} onEdit={onEdit} />
       </div>
     </div>
   );

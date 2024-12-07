@@ -90,10 +90,21 @@ export const getProductsByStore = async (storeId: number) => {
   }
 };
 
-export const deleteProduct = async (id: number): Promise<void> => {
+export const deleteProduct = async (productId: number, storeId: number) => {
   try {
-    await db.delete(ProductTable).where(eq(ProductTable.id, id));
-  } catch {
-    throw new Error('Error al eliminar el producto');
+    await db
+      .delete(ProductInventoryTable)
+      .where(
+        and(
+          eq(ProductInventoryTable.productId, productId),
+          eq(ProductInventoryTable.storeId, storeId)
+        )
+      );
+    
+    console.log("Producto eliminado con éxito");
+    return { success: true };
+  } catch (error) {
+    console.error("Error al eliminar producto:", error);
+    throw error;
   }
 };
