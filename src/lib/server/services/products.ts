@@ -44,9 +44,9 @@ export const getProducts = async (
       .from(ProductTable)
       .leftJoin(
         ProductInventoryTable,
-        eq(ProductTable.id, ProductInventoryTable.product_id)
+        eq(ProductTable.id, ProductInventoryTable.productId)
       )
-      .leftJoin(StoreTable, eq(ProductInventoryTable.store_id, StoreTable.id))
+      .leftJoin(StoreTable, eq(ProductInventoryTable.storeId, StoreTable.id))
       .where(and(..._filters));
   } catch (error) {
     console.error(error);
@@ -62,9 +62,9 @@ export const getProductsByStore = async (storeId: number) => {
       .from(ProductInventoryTable)
       .leftJoin(
         ProductTable,
-        eq(ProductInventoryTable.product_id, ProductTable.id)
+        eq(ProductInventoryTable.productId, ProductTable.id)
       )
-      .where(eq(ProductInventoryTable.store_id, storeId));
+      .where(eq(ProductInventoryTable.storeId, storeId));
   } catch (error) {
     console.log(error);
     return [];

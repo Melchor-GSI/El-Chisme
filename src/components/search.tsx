@@ -1,9 +1,9 @@
 "use client";
 
+import { getProducts } from "@/lib/server/services/products";
+import { useLocationContext } from "@/store";
 import { ProductFilter } from "@/types/product";
 import { readQuery, updateQuery } from "@/utils/filter";
-import { useLocationContext } from "@/store";
-import { Location } from "@/types/types";
 import { SearchIcon, SlidersHorizontal } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ChangeEvent, useEffect, useState } from "react";
@@ -22,14 +22,15 @@ export default function Search() {
   const [priceError, setPriceError] = useState(false);
 
   useEffect(() => {
-    fetch(`/products?${searchParams.toString()}`)
-      .then((response) => response.json())
-      .then(({ data }: { data: Location[] }) => {
+    getProducts()
+      .then((data) => {
+        console.log(data);
         dispatch({
           type: "SET_LOCATIONS",
           payload: data.filter((d) => d.store !== null),
         });
       })
+
       .catch((error) => console.error(error));
   }, [searchParams]);
 
@@ -60,7 +61,7 @@ export default function Search() {
     <div className="space-y-2">
       <Card className="w-full bg-background/95 shadow-lg">
         <CardContent className="p-2">
-          <div className="flex items-center space-x-2 mb-2">
+          <div className="flex items-center space-x-2">
             <SearchIcon className="ml-1" />
             <Input
               placeholder="Buscar..."
@@ -110,14 +111,16 @@ export default function Search() {
                 </div>
               </div>
 
-              <Button
-                className="w-full px-4"
-                onClick={handleSearch}
-                disabled={priceError}
-              >
-                <SearchIcon className="mr-2 h-4 w-4" />
-                Aplicar Filtros
-              </Button>
+              <div className="pt-4">
+                <Button
+                  className="w-full px-4"
+                  onClick={handleSearch}
+                  disabled={priceError}
+                >
+                  <SearchIcon className="mr-2 h-4 w-4" />
+                  Aplicar Filtros
+                </Button>
+              </div>
             </div>
           </CardContent>
         </Card>

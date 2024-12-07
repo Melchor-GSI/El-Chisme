@@ -1,17 +1,17 @@
 import {
-    AnyPgColumn,
-    boolean,
-    doublePrecision,
-    integer,
-    pgTable,
-    serial,
-    text,
-    timestamp
+  AnyPgColumn,
+  boolean,
+  doublePrecision,
+  integer,
+  pgTable,
+  serial,
+  text,
+  timestamp,
 } from "drizzle-orm/pg-core";
 import { UserTable } from "./user";
 
 export const StoreTable = pgTable("stores", {
-  id: serial("store_id").primaryKey(),
+  id: serial("id").primaryKey(),
   name: text("name").notNull(),
   contact_information: text("phone"),
   shipping_options: boolean("shipping_options").default(false),

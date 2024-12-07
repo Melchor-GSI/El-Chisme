@@ -1,3 +1,5 @@
+import { GetProductDto } from "./product";
+
 export type Location = {
   id: number;
   name: string;
@@ -19,4 +21,4 @@ export type State = {
 };
 
 // Define action types
-export type Action = { type: "SET_LOCATIONS"; payload: Location[] };
+export type Action = { type: "SET_LOCATIONS"; payload: GetProductDto[] };
