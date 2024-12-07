@@ -1,9 +1,10 @@
+import { formatToCurrency } from "@/utils/format";
 import { FileImage } from "lucide-react";
 import { FC } from "react";
 
 interface ProductItemProps {
   name: string;
-  price: number;
+  price?: number | null;
   imageUrl?: string;
 }
 
@@ -27,7 +28,7 @@ export const ProductItem: FC<ProductItemProps> = ({
       </div>
       <div className="ml-4">
         <h3 className="text-lg font-semibold">{name}</h3>
-        <p className="text-gray-500">${price.toFixed(2)}</p>
+        <p className="text-gray-500">{formatToCurrency(price)}</p>
       </div>
     </div>
   );

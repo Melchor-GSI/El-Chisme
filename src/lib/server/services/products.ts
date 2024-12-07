@@ -1,20 +1,15 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { GetProductDto, ProductFilter } from "@/types/product";
 import {
-  and,
-  eq,
-  gte,
-  ilike,
-  lte,
-  sql,
-  SQL
-} from "drizzle-orm";
+  CreateStoreProductDto,
+  GetProductDto,
+  ProductFilter,
+} from "@/types/product";
+import { and, eq, gte, ilike, lte, sql, SQL } from "drizzle-orm";
 import { ProductTable } from "../db/schemas";
 import { ProductInventoryTable } from "../db/schemas/product_inventory";
 import { StoreTable } from "../db/schemas/store";
-
 
 export const getProducts = async (
   filters?: ProductFilter
@@ -33,7 +28,7 @@ export const getProducts = async (
 
     if (filters?.priceMin)
       _filters.push(gte(ProductInventoryTable.price, Number(filters.priceMin)));
-    console.log(_filters)
+    console.log(_filters);
     return (await db
       .select({
         id: StoreTable.id,
@@ -57,7 +52,10 @@ export const getProducts = async (
         ProductInventoryTable,
         eq(StoreTable.id, ProductInventoryTable.storeId)
       )
-      .leftJoin(ProductTable, eq(ProductInventoryTable.productId, ProductTable.id))
+      .leftJoin(
+        ProductTable,
+        eq(ProductInventoryTable.productId, ProductTable.id)
+      )
       .where(and(..._filters))
       .groupBy(StoreTable.id)) as GetProductDto[];
   } catch (error) {
@@ -76,7 +74,7 @@ export const getProductsByStore = async (storeId: number) => {
         image: ProductTable.image,
         price: ProductInventoryTable.price,
         quantity: ProductInventoryTable.quantity,
-        categoryId: ProductTable.categoryId
+        categoryId: ProductTable.categoryId,
       })
       .from(ProductInventoryTable)
       .leftJoin(
@@ -100,11 +98,40 @@ export const deleteProduct = async (productId: number, storeId: number) => {
           eq(ProductInventoryTable.storeId, storeId)
         )
       );
-    
+
     console.log("Producto eliminado con éxito");
     return { success: true };
   } catch (error) {
     console.error("Error al eliminar producto:", error);
+    throw error;
+  }
+};
+
+export const createStoreProduct = async ({
+  storeId,
+  price,
+  quantity,
+  product,
+}: CreateStoreProductDto) => {
+  try {
+    const [newProduct] = await db
+      .insert(ProductTable)
+      .values(product)
+      .returning({
+        id: ProductTable.id,
+      });
+
+    await db.insert(ProductInventoryTable).values({
+      storeId,
+      price,
+      quantity,
+      productId: newProduct.id,
+    });
+
+    console.log("Producto creado con éxito");
+    return { success: true, productId: newProduct.id };
+  } catch (error) {
+    console.error("Error al crear producto:", error);
     throw error;
   }
 };

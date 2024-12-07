@@ -1,65 +1,45 @@
-import { GetProductDto } from "@/types/product";
+"use client";
+
+import { useLocationContext } from "@/store";
+import { ChevronLeft } from "lucide-react";
 import { ProductItem } from "./ProductItem";
-import { Card } from "./ui";
+import { Button, Card } from "./ui";
 
-const products = [
-  {
-    name: "Product 1",
-    price: 29.99,
-    imageUrl: "https://via.placeholder.com/150",
-  },
-  { name: "Product 2", price: 19.99 },
-  {
-    name: "Product 3",
-    price: 39.99,
-    imageUrl: "https://via.placeholder.com/150",
-  },
-  {
-    name: "Product 1",
-    price: 29.99,
-    imageUrl: "https://via.placeholder.com/150",
-  },
-  { name: "Product 2", price: 19.99 },
-  {
-    name: "Product 3",
-    price: 39.99,
-    imageUrl: "https://via.placeholder.com/150",
-  },
-  {
-    name: "Product 3",
-    price: 39.99,
-    imageUrl: "https://via.placeholder.com/150",
-  },
-  {
-    name: "Product 1",
-    price: 29.99,
-    imageUrl: "https://via.placeholder.com/150",
-  },
-  { name: "Product 2", price: 19.99 },
-  {
-    name: "Product 3",
-    price: 39.99,
-    imageUrl: "https://via.placeholder.com/150",
-  },
-];
+export const ProductList = () => {
+  const { state, dispatch } = useLocationContext();
+  const location = state.selectedLocation;
 
-export type ProductListProps = {
-  data: GetProductDto[];
-};
+  const onClose = () => {
+    dispatch({ type: "SET_SELECTED_LOCATION", payload: null });
+  };
 
-export const ProductList = ({ data }: ProductListProps) => {
-  console.log(data);
+  if (!location) {
+    return null;
+  }
 
   return (
     <Card>
-      {products.map((product, index) => (
-        <ProductItem
-          key={index}
-          name={product.name}
-          price={product.price}
-          imageUrl={product.imageUrl}
-        />
-      ))}
+      <div className="p-4 pb-2 flex gap-2 items-center">
+        <Button
+          className="h-4 w-4 rounded-full p-4"
+          variant="ghost"
+          onClick={onClose}
+        >
+          <ChevronLeft />
+        </Button>
+        <h2 className="font-bold text-lg">{location.name}</h2>
+      </div>
+
+      <div className="overflow-auto max-h-[800px]">
+        {location.products.map((product, index) => (
+          <ProductItem
+            key={index}
+            name={product.name}
+            price={product.price}
+            // imageUrl={product.imageUrl}
+          />
+        ))}
+      </div>
     </Card>
   );
 };

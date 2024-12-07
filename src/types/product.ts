@@ -1,13 +1,13 @@
 export type Product = {
   id: number;
   name: string | null;
-  description: string | null;
+  description?: string | null;
   image: string | null;
   price: number;
   quantity: number;
   categoryId: number | null;
   createdAt?: Date;
-}
+};
 
 export type ProductFilter = {
   name?: string;
@@ -58,8 +58,14 @@ export type GetProductDto = {
 
 export type CreateProductDto = {
   name: string;
+  image?: string;
   categoryId: number;
   description: string;
+};
+
+export type CreateStoreProductDto = {
+  product: CreateProductDto;
   price: number;
   quantity: number;
+  storeId: number;
 };

@@ -16,7 +16,11 @@ const productSchema = z.object({
 
 type ProductFormValues = z.infer<typeof productSchema>;
 
-export const ProductForm = () => {
+export type ProductFormProps = {
+  onSubmit: (data: ProductFormValues) => void;
+};
+
+export const ProductForm = ({ onSubmit }: ProductFormProps) => {
   const {
     register,
     handleSubmit,
@@ -26,15 +30,11 @@ export const ProductForm = () => {
     resolver: zodResolver(productSchema),
   });
 
-  const onSubmit = (data: ProductFormValues) => {
-    console.log(data);
-  };
-
   return (
-    <CardContent className="space-y-2">
-      <form id="product" onSubmit={handleSubmit(onSubmit)}>
-        <div className="space-y-2">
-          <Label>Nombre</Label>
+    <form id="product" onSubmit={handleSubmit(onSubmit)}>
+      <CardContent className="space-y-2">
+        <div className="space-y-1.5">
+          <Label className="pl-1">Nombre</Label>
           <Input {...register("name")} placeholder="Inserte nombre" />
           {errors.name && <span>{errors.name.message}</span>}
         </div>
@@ -48,8 +48,8 @@ export const ProductForm = () => {
         />
         {errors.categoryId && <span>{errors.categoryId.message}</span>}
 
-        <div className="space-y-2">
-          <Label>Precio</Label>
+        <div className="space-y-1.5">
+          <Label className="pl-1">Precio</Label>
           <div className="flex gap-2">
             <div>
               <Input
@@ -64,15 +64,15 @@ export const ProductForm = () => {
           </div>
         </div>
 
-        <div className="space-y-2">
-          <Label>Descripcion</Label>
+        <div className="space-y-1.5">
+          <Label className="ml-1">Descripcion</Label>
           <Input
             {...register("description")}
             placeholder="Inserte descripcion"
           />
           {errors.description && <span>{errors.description.message}</span>}
         </div>
-      </form>
-    </CardContent>
+      </CardContent>
+    </form>
   );
 };

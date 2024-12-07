@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
+
 const Map = dynamic(() => import("@/components/map"), { ssr: false });
 
 const MapContainer = () => {
@@ -12,4 +13,4 @@ const MapContainer = () => {
   );
 };
 
-export default MapContainer
+export default MapContainer;

@@ -15,14 +15,13 @@ export default function Search() {
   const searchParams = useSearchParams();
   const { dispatch } = useLocationContext();
   const [showFilters, setShowFilters] = useState(false);
-  const [productName, setProductName] = useState("");
   const [filters, setFilters] = useState<ProductFilter>(
     readQuery(searchParams)
   );
   const [priceError, setPriceError] = useState(false);
 
   useEffect(() => {
-    getProducts()
+    getProducts(filters)
       .then((data) => {
         console.log(data);
         dispatch({
@@ -65,8 +64,10 @@ export default function Search() {
             <SearchIcon className="ml-1" />
             <Input
               placeholder="Buscar..."
-              value={productName}
-              onChange={(e) => setProductName(e.target.value)}
+              name="name"
+              value={filters.name}
+              onChange={onInput}
+              onKeyDown={(e) => e.key === "Enter" && handleSearch(e)}
             />
             <Button onClick={() => setShowFilters(!showFilters)}>
               <SlidersHorizontal />

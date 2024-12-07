@@ -4,7 +4,9 @@ import { StoreTable } from "./store";
 
 export const ProductInventoryTable = pgTable("product-inventories", {
   id: serial("id").primaryKey(),
-  storeId: integer("store_id").references((): AnyPgColumn => StoreTable.id),
+  storeId: integer("store_id")
+    .references((): AnyPgColumn => StoreTable.id)
+    .notNull(),
   productId: integer("product_id")
     .references((): AnyPgColumn => ProductTable.id)
     .notNull(),
