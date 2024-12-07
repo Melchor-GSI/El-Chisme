@@ -1,6 +1,6 @@
-import { serial, pgTable, text, foreignKey, integer, AnyPgColumn } from "drizzle-orm/pg-core"
+import { pgTable, serial, text } from "drizzle-orm/pg-core";
 
-export const location = pgTable("location", {
+export const LocationTable = pgTable("locations", {
     id: serial("id").primaryKey(),
     name: text("name").notNull(),
     coordinates: text("coordinates").notNull(),

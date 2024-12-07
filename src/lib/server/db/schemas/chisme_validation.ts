@@ -1,10 +1,11 @@
-import { integer, pgTable, text, timestamp, serial, AnyPgColumn } from "drizzle-orm/pg-core";
-import {productsTable} from "./product"
-import { usersTable } from "./user";
-import { chisme } from "./chisme";
+import { AnyPgColumn, integer, pgTable, serial } from "drizzle-orm/pg-core";
+import { ChismeTable } from "./chisme";
+import { UserTable } from "./user";
 
-export const product_inventory = pgTable("product_inventory", {
+export const ChismeValidationTable = pgTable("chisme-validations", {
   id: serial("id").primaryKey(),
-  user_id: integer("user_id").references((): AnyPgColumn => usersTable.id),
-  chisme_id: integer("chisme_id").references((): AnyPgColumn => chisme.id).notNull(),
+  user_id: integer("user_id").references((): AnyPgColumn => UserTable.id),
+  chisme_id: integer("chisme_id")
+    .references((): AnyPgColumn => ChismeTable.id)
+    .notNull(),
 });

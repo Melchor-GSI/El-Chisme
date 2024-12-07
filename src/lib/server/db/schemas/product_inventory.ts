@@ -1,10 +1,10 @@
-import { integer, pgTable, text, timestamp, serial, AnyPgColumn } from "drizzle-orm/pg-core";
-import { store } from "./store";
-import {productsTable} from "./product"
+import { AnyPgColumn, integer, pgTable, serial } from "drizzle-orm/pg-core";
+import { ProductTable } from "./product";
+import { StoreTable } from "./store";
 
-export const product_inventory = pgTable("product_inventory", {
+export const ProductInventoryTable = pgTable("product-inventories", {
   id: serial("id").primaryKey(),
-  store_id: integer("store_id").references((): AnyPgColumn => store.id),
-  product_id: integer("product_id").references((): AnyPgColumn => productsTable.id).notNull(),
+  store_id: integer("store_id").references((): AnyPgColumn => StoreTable.id),
+  product_id: integer("product_id").references((): AnyPgColumn => ProductTable.id).notNull(),
   quantity: integer("quantity").notNull()
 });

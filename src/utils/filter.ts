@@ -1,4 +1,4 @@
-import { productsTable } from "@/lib/server/db/schemas";
+import { ProductTable } from "@/lib/server/db/schemas";
 import { ProductFilter } from "@/types/product";
 import { eq, gte, like, lte } from "drizzle-orm";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
@@ -29,20 +29,20 @@ export const parseFilters = (
 ) => {
   const filters = [];
   if (searchParams.name) {
-    filters.push(like(productsTable.name, `%${searchParams.name}%`));
+    filters.push(like(ProductTable.name, `%${searchParams.name}%`));
   }
   if (searchParams.minPrice) {
     filters.push(
-      gte(productsTable.price, parseInt(searchParams.minPrice as string))
+      gte(ProductTable.price, parseInt(searchParams.minPrice as string))
     );
   }
   if (searchParams.maxPrice) {
     filters.push(
-      lte(productsTable.price, parseInt(searchParams.maxPrice as string))
+      lte(ProductTable.price, parseInt(searchParams.maxPrice as string))
     );
   }
   if (searchParams.categoryId) {
-    filters.push(eq(productsTable.categoryId, Number(searchParams.categoryId)));
+    filters.push(eq(ProductTable.categoryId, Number(searchParams.categoryId)));
   }
 
   return filters;
