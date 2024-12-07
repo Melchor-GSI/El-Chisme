@@ -135,3 +135,39 @@ export const createStoreProduct = async ({
     throw error;
   }
 };
+
+export const updateProduct = async (
+  productId: number,
+  storeId: number,
+  updates: Partial<CreateStoreProductDto>
+) => {
+  try {
+    if (updates.product) {
+      await db
+        .update(ProductTable)
+        .set(updates.product)
+        .where(eq(ProductTable.id, productId));
+    }
+
+    if (updates.price !== undefined || updates.quantity !== undefined) {
+      await db
+        .update(ProductInventoryTable)
+        .set({
+          ...(updates.price !== undefined && { price: updates.price }),
+          ...(updates.quantity !== undefined && { quantity: updates.quantity }),
+        })
+        .where(
+          and(
+            eq(ProductInventoryTable.productId, productId),
+            eq(ProductInventoryTable.storeId, storeId)
+          )
+        );
+    }
+
+    console.log("Producto actualizado con éxito");
+    return { success: true };
+  } catch (error) {
+    console.error("Error al actualizar producto:", error);
+    throw error;
+  }
+};
