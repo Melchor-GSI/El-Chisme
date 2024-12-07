@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useNotification } from '@/contexts/NotificationContext'
 import { Product, productService } from '@/lib/server/services/productServices'
-import { useNotification } from '@/app/contexts/NotificationContext'
+import { useEffect, useState } from 'react'
 
 
 export function useProducts() {

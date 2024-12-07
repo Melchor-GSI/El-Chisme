@@ -28,10 +28,10 @@ export async function GET(req: Request) {
 
 export async function POST(request: Request) {
   try {
-    const { name, price, categoryId, description } = await request.json();
+    const { name, categoryId, description } = await request.json();
     const newProduct = await db
       .insert(ProductTable)
-      .values({ name, price, categoryId, description })
+      .values({ name, categoryId, description })
       .returning();
     return NextResponse.json({ data: newProduct });
   } catch (error) {

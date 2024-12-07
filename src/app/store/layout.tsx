@@ -1,5 +1,5 @@
-import { NotificationProvider } from '@/app/contexts/NotificationContext'
 import { Notification } from '@/components/notification'
+import { NotificationProvider } from '@/contexts/NotificationContext'
 
 export default function StoreLayout({
     children,

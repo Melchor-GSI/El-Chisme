@@ -1,8 +1,8 @@
 'use client'
 
-import React from 'react'
+import { useNotification } from '@/contexts/NotificationContext'
 import { X } from 'lucide-react'
-import { useNotification } from '@/app/contexts/NotificationContext'
+import React from 'react'
 
 export const Notification: React.FC = () => {
   const { notifications, removeNotification } = useNotification()
