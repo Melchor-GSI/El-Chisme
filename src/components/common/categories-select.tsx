@@ -1,5 +1,6 @@
 "use client";
 
+import { getCategories } from "@/lib/server/services/categories";
 import { Category } from "@/types/product";
 import { SelectProps } from "@radix-ui/react-select";
 import { useEffect, useState } from "react";
@@ -17,9 +18,10 @@ export const CategoriesSelect = (props: SelectProps) => {
   const [categories, setCategories] = useState<Category[]>([]);
 
   useEffect(() => {
-    fetch("/categories")
-      .then((response) => response.json())
-      .then((data) => setCategories(data.data));
+    getCategories().then((data) => setCategories(data));
+    // fetch("/categories")
+    //   .then((response) => response.json())
+    //   .then((data) => setCategories(data.data));
   }, []);
 
   return (

@@ -1,8 +1,8 @@
-'use server'
+"use server";
 
 import { db } from "@/lib/db";
 import { GetProductDto, ProductFilter } from "@/types/product";
-import { and, eq, gte, ilike, lte, SQL } from "drizzle-orm";
+import { and, eq, getTableColumns, gte, ilike, lte, SQL } from "drizzle-orm";
 import { ProductTable } from "../db/schemas";
 import { ProductInventoryTable } from "../db/schemas/product_inventory";
 import { StoreTable } from "../db/schemas/store";
@@ -50,6 +50,23 @@ export const getProducts = async (
       .where(and(..._filters));
   } catch (error) {
     console.error(error);
+    return [];
+  }
+};
+
+export const getProductsByStore = async (storeId: number) => {
+  const productColumns = getTableColumns(ProductTable);
+  try {
+    return await db
+      .select({ ...productColumns, quantity: ProductInventoryTable.quantity })
+      .from(ProductInventoryTable)
+      .leftJoin(
+        ProductTable,
+        eq(ProductInventoryTable.product_id, ProductTable.id)
+      )
+      .where(eq(ProductInventoryTable.store_id, storeId));
+  } catch (error) {
+    console.log(error);
     return [];
   }
 };
