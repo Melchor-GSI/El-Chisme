@@ -11,7 +11,7 @@ const productSchema = z.object({
   name: z.string().nonempty("Nombre es requerido"),
   description: z.string().nonempty("Descripcion es requerida"),
   price: z.number().min(0, "Precio debe ser mayor o igual a 0"),
-  categoryId: z.string().nonempty("Categoria es requerida"),
+  categoryId: z.number().min(0, "Categoria es requerida"),
 });
 
 type ProductFormValues = z.infer<typeof productSchema>;

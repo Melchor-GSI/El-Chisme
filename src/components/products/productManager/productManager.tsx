@@ -5,7 +5,7 @@ import {
   ProductFormValues,
 } from "@/components/products/productForm/product-form";
 import { ProductTable } from "@/components/products/productTable/productTable";
-import { Button } from "@/components/ui/base-button";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -38,7 +38,7 @@ export function ProductManager() {
         product: {
           name: data.name,
           description: data.description || null,
-          categoryId: data.categoryId ? parseInt(data.categoryId) : null,
+          categoryId: data.categoryId,
         },
       };
 
@@ -79,7 +79,7 @@ export function ProductManager() {
         name: data.name,
         description: data.description || null,
         price: data.price || "0",
-        categoryId: data.categoryId ? parseInt(data.categoryId) : null,
+        categoryId: data.categoryId,
       };
 
       console.log("Enviando actualización:", updatedProduct);
@@ -117,8 +117,8 @@ export function ProductManager() {
     const formValues: ProductFormValues = {
       name: product.name || "",
       description: product.description || "",
-      price: product.price || null,
-      categoryId: product.categoryId?.toString() || null,
+      price: product.price || 0,
+      categoryId: product.categoryId ?? 0,
     };
     setSelectedProduct({ id: product.id, ...formValues });
     setEditOpen(true);

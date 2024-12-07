@@ -4,7 +4,7 @@ import {
   ProductForm,
   ProductFormValues,
 } from "@/components/products/productForm/product-form";
-import { Button } from "@/components/ui/base-button";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
