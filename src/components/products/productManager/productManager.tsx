@@ -31,11 +31,42 @@ export function ProductManager() {
 
   const handleSubmit = async (data: ProductFormValues) => {
     try {
-      // Aquí irá tu lógica para guardar el producto
-      console.log("Producto a guardar:", data);
+      const productData = {
+        storeId: 3,
+        price: data.price || "0",
+        quantity: 0,
+        product: {
+          name: data.name,
+          description: data.description || null,
+          categoryId: data.categoryId ? parseInt(data.categoryId) : null,
+        },
+      };
+
+      console.log("Frontend - Datos a enviar:", productData);
+
+      const response = await fetch("/products", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(productData),
+      });
+
+      const result = await response.json();
+      console.log("Frontend - Respuesta recibida:", result);
+
+      if (!response.ok) {
+        throw new Error(result.error || "Error al crear el producto");
+      }
+
       toast.success("Producto agregado exitosamente");
       setOpen(false);
-    } catch {
+
+      if (tableRef.current) {
+        await tableRef.current.loadProducts();
+      }
+    } catch (error) {
+      console.error("Frontend - Error completo:", error);
       toast.error("Error al agregar el producto");
     }
   };

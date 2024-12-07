@@ -1,8 +1,6 @@
-import { db } from "@/lib/db";
-import { NextResponse } from "next/server";
 
-import { ProductTable } from "@/lib/server/db/schemas/product";
-import { getProducts } from "@/lib/server/services/products";
+import { NextResponse } from "next/server";
+import { createStoreProduct, getProducts } from "@/lib/server/services/products";
 import { ProductFilter } from "@/types/product";
 
 export async function GET(req: Request) {
@@ -28,12 +26,9 @@ export async function GET(req: Request) {
 
 export async function POST(request: Request) {
   try {
-    const { name, categoryId, description } = await request.json();
-    const newProduct = await db
-      .insert(ProductTable)
-      .values({ name, categoryId, description })
-      .returning();
-    return NextResponse.json({ data: newProduct });
+    const body = await request.json();
+    const result = await createStoreProduct(body);
+    return NextResponse.json({ data: result });
   } catch (error) {
     console.error("Error in API route:", error);
     return NextResponse.json(
