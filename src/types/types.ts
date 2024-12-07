@@ -3,7 +3,7 @@ import { GetProductDto } from "./product";
 
 export type State = {
   locating: boolean;
-  locatingCoords: { lat: number; long: number } | null;
+  locatingCoords: Location | null;
   selectedLocation: GetProductDto | null;
   locations: GetProductDto[];
 };
