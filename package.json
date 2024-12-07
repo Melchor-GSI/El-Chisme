@@ -6,7 +6,16 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "push": "drizzle-kit push:pg",
+    "pull": "drizzle-kit introspect:pg",
+    "generate": "drizzle-kit generate",
+    "drop": "drizzle-kit drop",
+    "check": "drizzle-kit check:pg",
+    "up": "drizzle-kit up:pg",
+    "migrate": "drizzle-kit migrate",
+    "studio": "drizzle-kit studio",
+    "seed": "npx tsx scripts/seed.ts"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.6.0",
@@ -17,6 +26,7 @@
     "@radix-ui/react-slot": "^1.1.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "dotenv": "^16.4.7",
     "drizzle-kit": "^0.29.1",
     "drizzle-orm": "^0.37.0",
     "leaflet": "^1.9.4",
