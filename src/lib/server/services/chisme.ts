@@ -6,6 +6,7 @@ import { and, eq, getTableColumns, gte, ilike, lte, SQL } from "drizzle-orm";
 import { ProductTable } from "../db/schemas";
 import { ChismeTable } from "../db/schemas/chisme";
 import { LocationTable } from "../db/schemas/location";
+import { CreateChismeDTO } from "@/types/chisme";
 
 export const getChismes = async (filters?: ProductFilter) => {
   const productColumns = getTableColumns(ProductTable);
@@ -40,5 +41,28 @@ export const getChismes = async (filters?: ProductFilter) => {
   } catch (err) {
     console.log(err);
     return [];
+  }
+};
+
+export const createChisme = async (chisme: CreateChismeDTO) => {
+  try {
+    let location = null;
+    if (chisme.lat && chisme.lng) {
+      location = await db
+        .insert(LocationTable)
+        .values({ lat: chisme.lat, lng: chisme.lng })
+        .returning({ id: LocationTable.id });
+    }
+    return await db.insert(ChismeTable).values({
+      productId: chisme.productId,
+      price: chisme.price,
+      ...(location ? { location: location[0].id } : {}),
+      storeId: chisme.storeId,
+      // add 3 days to the current date
+      end_date: new Date(new Date().getTime() + 3 * 24 * 60 * 60 * 1000),
+    });
+  } catch (err) {
+    console.log(err);
+    return null;
   }
 };
