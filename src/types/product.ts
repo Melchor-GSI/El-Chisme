@@ -23,7 +23,7 @@ export type Category = {
 export type GetProductDto = {
   name: string;
   description: string;
-  price: number |null;
+  price: number | null;
   image: string | null;
   store: {
     id: number;
@@ -33,4 +33,12 @@ export type GetProductDto = {
     lat: number;
     long: number;
   } | null;
+};
+
+export type CreateProductDto = {
+  name: string;
+  categoryId: number;
+  description: string;
+  price: number;
+  quantity: number;
 };

@@ -1,9 +1,9 @@
 import { db } from "@/lib/db";
-import { categoriesTable } from "../db/schemas/category";
+import { CategoriesTable } from "../db/schemas/category";
 
 export const getCategories = async () => {
   try {
-    return await db.select().from(categoriesTable);
+    return await db.select().from(CategoriesTable);
   } catch (error) {
     console.log(error);
     return [];

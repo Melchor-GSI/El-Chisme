@@ -16,17 +16,19 @@ export const getProducts = async (
     }
     if (filters?.categoryId)
       _filters.push(eq(ProductTable.categoryId, Number(filters.categoryId)));
-    if (filters?.priceMin)
-      _filters.push(gte(ProductTable.price, Number(filters.priceMin)));
+
     if (filters?.priceMax)
-      _filters.push(lte(ProductTable.price, Number(filters.priceMax)));
+      _filters.push(lte(ProductInventoryTable.price, Number(filters.priceMax)));
+
+    if (filters?.priceMin)
+      _filters.push(gte(ProductInventoryTable.price, Number(filters.priceMin)));
 
     return await db
       .select({
         id: ProductTable.id,
         name: ProductTable.name,
         description: ProductTable.description,
-        price: ProductTable.price,
+        price: ProductInventoryTable.price,
         image: ProductTable.image,
         store: {
           id: StoreTable.id,
