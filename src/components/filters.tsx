@@ -41,6 +41,7 @@ export const Filters = () => {
   return (
     <Card className="py-4">
       <CardContent className="space-y-2">
+
         <CategoriesSelect
           name="categoryId"
           value={filters.categoryId}

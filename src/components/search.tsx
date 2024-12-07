@@ -1,21 +1,25 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { useToggleState } from "@/hooks/useToggleState";
+import { ProductFilter } from "@/types/product";
+import { readQuery, updateQuery } from "@/utils/filter";
 import { useLocationContext } from "@/store";
 import { Location } from "@/types/types";
 import { SearchIcon, SlidersHorizontal } from "lucide-react";
-import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import { Filters } from "./filters";
+import { useRouter, useSearchParams } from "next/navigation";
+import { ChangeEvent, useEffect, useState } from "react";
+import { CategoriesSelect, CurrencySelect } from "./common";
+import { Button, Card, CardContent, Input, Label } from "./ui";
 
 export default function Search() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const { dispatch } = useLocationContext();
+  const [showFilters, setShowFilters] = useState(false);
   const [productName, setProductName] = useState("");
-  const [showFilters, toggleShowFilters] = useToggleState();
+  const [filters, setFilters] = useState<ProductFilter>(
+    readQuery(searchParams)
+  );
+  const [priceError, setPriceError] = useState(false);
 
   useEffect(() => {
     fetch(`/products?${searchParams.toString()}`)
@@ -25,33 +29,99 @@ export default function Search() {
           type: "SET_LOCATIONS",
           payload: data.filter((d) => d.store !== null),
         });
-        console.log(data);
       })
       .catch((error) => console.error(error));
-    // .then((data) => console.log(data));
   }, [searchParams]);
 
-  // useEffect(() => {
+  useEffect(() => {
+    const hasError =
+      filters.priceMin &&
+      filters.priceMax &&
+      Number(filters.priceMin) > Number(filters.priceMax);
 
-  // }, []);
+    setPriceError(Boolean(hasError));
+  }, [filters]);
+
+  const onInput = (e: ChangeEvent<HTMLInputElement>) => {
+    setFilters({ ...filters, [e.target.name]: e.target.value });
+  };
+
+  const onSelect = (field: keyof ProductFilter) => (value: string) => {
+    setFilters({ ...filters, [field]: value });
+  };
+
+  const handleSearch = (event: React.FormEvent) => {
+    event.preventDefault();
+    updateQuery(filters, router);
+    setShowFilters(false);
+  };
 
   return (
     <div className="space-y-2">
       <Card className="w-full bg-background/95 shadow-lg">
-        <CardContent className="p-2 flex items-center space-x-2">
-          <SearchIcon className="ml-1" />
-          <Input
-            placeholder="Buscar..."
-            value={productName}
-            onChange={(e) => setProductName(e.target.value)}
-          />
-          <Button onClick={toggleShowFilters}>
-            <SlidersHorizontal />
-          </Button>
+        <CardContent className="p-2">
+          <div className="flex items-center space-x-2 mb-2">
+            <SearchIcon className="ml-1" />
+            <Input
+              placeholder="Buscar..."
+              value={productName}
+              onChange={(e) => setProductName(e.target.value)}
+            />
+            <Button onClick={() => setShowFilters(!showFilters)}>
+              <SlidersHorizontal />
+            </Button>
+          </div>
         </CardContent>
       </Card>
 
-      {showFilters && <Filters />}
+      {showFilters && (
+        <Card>
+          <CardContent className="mt-2">
+            <div className="space-y-2">
+              <CategoriesSelect
+                name="categoryId"
+                value={filters.categoryId}
+                onValueChange={onSelect("categoryId")}
+              />
+
+              <div className="space-y-2">
+                <Label>Precio</Label>
+                <div className="flex gap-2">
+                  <Input
+                    className={
+                      priceError ? "border-red-400 bg-red-100 text-red-400" : ""
+                    }
+                    name="priceMin"
+                    value={filters.priceMin}
+                    onChange={onInput}
+                    type="number"
+                    min="0"
+                    placeholder="Mín"
+                  />
+                  <Input
+                    name="priceMax"
+                    value={filters.priceMax}
+                    onChange={onInput}
+                    type="number"
+                    min="0"
+                    placeholder="Máx"
+                  />
+                  <CurrencySelect disabled />
+                </div>
+              </div>
+
+              <Button
+                className="w-full px-4"
+                onClick={handleSearch}
+                disabled={priceError}
+              >
+                <SearchIcon className="mr-2 h-4 w-4" />
+                Aplicar Filtros
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }
